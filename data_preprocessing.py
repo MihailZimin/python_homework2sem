@@ -6,13 +6,10 @@ import sklearn
 import matplotlib.pyplot as plt
 from enum import StrEnum
 
-plt.style.use("ggplot")
-np.random.seed(42)
-
 
 def get_data():
-    return sklearn.datasets.make_moons(n_samples=10000, noise=0.3)
-    # return sklearn.datasets.make_classification(n_samples=5000)
+    return sklearn.datasets.make_moons(n_samples=1000, noise=0.3)
+    # return sklearn.datasets.make_classification(n_samples=3000)
 
 
 points, labels = sklearn.datasets.make_moons(n_samples=1000, noise=0.3)
@@ -65,16 +62,16 @@ def get_boxplot_outliers(
     data: np.ndarray,
     key: Callable[[Any], Any],
 ) -> np.ndarray:
-    vkey = np.vectorize(key)
+    vals = np.array([key(point) for point in data])
 
-    indexes = np.argsort(vkey(data))
-    sorted_data = data[indexes]
+    indexes = np.argsort(vals)
+    sorted_data = vals[indexes]
     sz = data.shape[0]
     q1 = sorted_data[int(sz*0.25)]
     q3 = sorted_data[int(sz*0.75)]
 
     eps = (q3 - q1) * 1.5
-    mask = (vkey(sorted_data) < vkey(q1 - eps)) | (vkey(sorted_data) > vkey(q3 + eps))
+    mask = (sorted_data < q1 - eps) | (sorted_data > q3 + eps)
     return indexes[mask]
 
 
@@ -94,8 +91,8 @@ def train_test_split(
     unique_parts = np.unique(targets)
     indexes_of_parts = {part: np.where(targets == part)[0] for part in unique_parts}
 
-    train_indexes = np.ndarray(shape=(1), dtype=int)
-    test_indexes = np.ndarray(shape=(1), dtype=int)
+    train_indexes = np.array([], dtype=int)
+    test_indexes = np.array([], dtype=int)
 
     for part in unique_parts:
         indexes = indexes_of_parts[part]

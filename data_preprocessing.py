@@ -9,20 +9,25 @@ from enum import StrEnum
 plt.style.use("ggplot")
 np.random.seed(42)
 
+
 def get_data():
-    return sklearn.datasets.make_moons(n_samples=1000, noise=0.3)
-    #return sklearn.datasets.make_classification(n_samples=5000)
+    return sklearn.datasets.make_moons(n_samples=10000, noise=0.3)
+    # return sklearn.datasets.make_classification(n_samples=5000)
+
 
 points, labels = sklearn.datasets.make_moons(n_samples=1000, noise=0.3)
+
 
 class AxisNames(StrEnum):
     X = "X"
     Y = "Y"
 
+
 class DiagramTypes(StrEnum):
     Violin = "Violin"
     Hist = "Hist"
     Boxplot = "Boxplot"
+
 
 class ShapeMismatchError(Exception):
     pass
@@ -48,7 +53,7 @@ def visualize_distribution(
         for row_ind, diag_name in enumerate(diagram_types):
             cur_axis = axis[row_ind, col_ind]
             cur_data_axis = int(axis_name == 'Y')
-            vd.plot_by_name(cur_axis, points[:,cur_data_axis], diag_name)
+            vd.plot_by_name(cur_axis, points[:, cur_data_axis], diag_name)
             if row_ind == 0:
                 cur_axis.set_title(axis_name)
 
@@ -81,7 +86,10 @@ def train_test_split(
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     if features.shape[0] != targets.shape[0]:
         raise ShapeMismatchError(
-            f"length of features: {features.shape[0]} not equal length of targets: {targets.shape[0]}"
+            (
+                f"length of features: "
+                f"{features.shape[0]} not equal length of targets: {targets.shape[0]}"
+            )
         )
     unique_parts = np.unique(targets)
     indexes_of_parts = {part: np.where(targets == part)[0] for part in unique_parts}
@@ -99,8 +107,10 @@ def train_test_split(
     if shuffle:
         np.random.shuffle(train_indexes)
         np.random.shuffle(test_indexes)
-    return features[train_indexes], targets[train_indexes], features[test_indexes], targets[test_indexes]
-
+    return (features[train_indexes],
+            targets[train_indexes],
+            features[test_indexes],
+            targets[test_indexes])
 
 
 # visualize_distribution(points,

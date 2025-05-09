@@ -1,13 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 class VisualiseData:
     pallete = {
         "pink-style": ["#FF9AA2", "#FFB7B2"],
-        "bright-style":["#2E86AB", "#A23B72"],
-        "dark-style":["#393E46", "#00ADB5"],
-        "gradient-style":["#003f5c", "#444e86"],
+        "bright-style": ["#2E86AB", "#A23B72"],
+        "dark-style": ["#393E46", "#00ADB5"],
+        "gradient-style": ["#003f5c", "#444e86"],
     }
+
     def __init__(self):
         self.colors = self.pallete["pink-style"]
 

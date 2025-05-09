@@ -1,6 +1,6 @@
 import algorithms
 import data_preprocessing
-import animation
+import time
 
 
 if __name__ == "__main__":
@@ -10,11 +10,11 @@ if __name__ == "__main__":
     )
     KNN = algorithms.WeightedKNearestNeighbors()
     KNN.fit(X_train, y_train)
-    # start = time.time()
-    # predictions = KNN.predict(X_test)
-    # end = time.time()
-    # print(algorithms.accuracy(y_test, predictions))
-    # print(end - start)
-    anim = animation.AnimationKNN(points, labels)
-    animate = anim.create_animation(KNN, X_test, y_test, cnt_of_frames=10)
+    start = time.time()
+    predictions = KNN.predict(X_test)
+    end = time.time()
+    print("accuracy: ", algorithms.accuracy(y_test, predictions))
+    print("time: ", end - start)
+    # anim = animation.AnimationKNN(points, labels)
+    # animate = anim.create_animation(KNN, X_test, y_test, cnt_of_frames=10)
     print("ok")

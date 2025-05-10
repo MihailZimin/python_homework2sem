@@ -34,6 +34,7 @@ class AnimationKNN:
         )
         self.circles.append(circle)
         self.axis.add_patch(circle)
+        self.axis.set_title(f"{X_test[frame_id][0]:.2f}, {X_test[frame_id][1]:.2f}")
 
         return self.scatter, self.circles[-1]
 

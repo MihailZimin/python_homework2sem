@@ -6,10 +6,17 @@ import sklearn
 import matplotlib.pyplot as plt
 from enum import StrEnum
 
+np.random.seed(42)
+
 
 def get_data():
-    return sklearn.datasets.make_moons(n_samples=1000, noise=0.3)
-    # return sklearn.datasets.make_classification(n_samples=3000)
+    return sklearn.datasets.make_moons(n_samples=10000, noise=0.3)
+    # return sklearn.datasets.make_classification(
+    #     n_samples=1000,
+    #     n_classes=5,
+    #     n_informative=12,
+    #     weights=[0.5, 0.25, 0.15, 0.07, 0.03]
+    # )
 
 
 points, labels = sklearn.datasets.make_moons(n_samples=1000, noise=0.3)
@@ -108,11 +115,3 @@ def train_test_split(
             targets[train_indexes],
             features[test_indexes],
             targets[test_indexes])
-
-
-# visualize_distribution(points,
-#     [DiagramTypes.Hist, DiagramTypes.Boxplot],
-#     [AxisNames.Y],
-#     path_to_save="visualisation"
-# )
-# plt.show()

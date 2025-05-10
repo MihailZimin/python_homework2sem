@@ -24,14 +24,23 @@ class WeightedKNearestNeighbors:
         self.X_train = X_train
         self.y_train = y_train
         self.tree = kdtree.KDTree(self.X_train, self.calc_distances)
+        self.dim = X_train.shape[1]
 
     def nearest_indexes_tree(self, el: np.ndarray) -> np.ndarray:
         return self.tree.find_k_nearest(el, self.n_neighbors)
 
+    def nearest_indexes_vectorized(self, el: np.ndarray) -> np.ndarray:
+        distances = np.array([self.calc_distances(el, i) for i in self.X_train])
+        nearest_indices = np.argpartition(distances, self.n_neighbors)[:self.n_neighbors]
+        return nearest_indices
+
     def predict(self, X_test: np.ndarray):
         predictions = []
         for el in X_test:
-            indexes = self.nearest_indexes_tree(el)
+            if self.dim >= 10:
+                indexes = self.nearest_indexes_vectorized(el)
+            else:
+                indexes = self.nearest_indexes_tree(el)
             features = self.X_train[indexes]
             distances = np.array([self.calc_distances(el, i) for i in features])
             h = np.max(distances)
@@ -53,7 +62,10 @@ class WeightedKNearestNeighbors:
         correctness = self.predict(X_test) == y_test
         radiuses = []
         for el in X_test:
-            indexes = self.nearest_indexes_tree(el)
+            if self.dim >= 10:
+                indexes = self.nearest_indexes_vectorized(el)
+            else:
+                indexes = self.nearest_indexes_tree(el)
             distances = np.array([self.calc_distances(el, i) for i in self.X_train[indexes]])
             h = np.max(distances)
             radiuses.append(h)
@@ -78,16 +90,27 @@ class KNearestNeighbors:
         self.X_train = X_train
         self.y_train = y_train
         self.tree = kdtree.KDTree(X_train, self.calc_distances)
+        self.dim = X_train.shape[1]
 
     def nearest_indexes_tree(self, el: np.ndarray) -> np.ndarray:
         return self.tree.find_k_nearest(el, self.n_neighbors)
 
+    def nearest_indexes_vectorized(self, el: np.ndarray) -> np.ndarray:
+        distances = np.array([self.calc_distances(el, i) for i in self.X_train])
+        nearest_indices = np.argpartition(distances, self.n_neighbors)[:self.n_neighbors]
+        return nearest_indices
+
     def predict(self, X_test: np.ndarray):
         predictions = []
         for el in X_test:
-            indexes = self.nearest_indexes_tree(el)
+            if self.dim >= 10:
+                indexes = self.nearest_indexes_vectorized(el)
+            else:
+                indexes = self.nearest_indexes_tree(el)
             nearest_labels = self.y_train[indexes]
-            predictions.append(np.unique(nearest_labels)[0])
+            unique_vals, unique_inds = np.unique(nearest_labels, return_counts=True)
+            indmax = np.argmax(unique_inds)
+            predictions.append(unique_vals[indmax])
 
         return np.array(predictions)
 
@@ -95,7 +118,10 @@ class KNearestNeighbors:
         correctness = self.predict(X_test) == y_test
         radiuses = []
         for el in X_test:
-            indexes = self.nearest_indexes_tree(el)
+            if self.dim >= 10:
+                indexes = self.nearest_indexes_vectorized(el)
+            else:
+                indexes = self.nearest_indexes_tree(el)
             distances = np.array([self.calc_distances(el, i) for i in self.X_train[indexes]])
             h = np.max(distances)
             radiuses.append(h)

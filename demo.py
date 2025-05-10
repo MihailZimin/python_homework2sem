@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 plt.style.use("ggplot")
-np.random.seed(42)
+# np.random.seed(42)
 
 
 # 1) считывание и обработка данных
@@ -33,11 +33,13 @@ mask[outliers] = False
 points = points[mask]
 labels = labels[mask]
 
-
 # разбиваем выборку
 X_train, y_train, X_test, y_test = data_preprocessing.train_test_split(
     points, labels, train_ratio=0.8, shuffle=True
 )
+# print(np.unique(labels, return_counts=True)[1] / labels.shape[0]) - проверка на адекватность
+# print(np.unique(y_train, return_counts=True)[1] / y_train.shape[0])
+# print(np.unique(y_test, return_counts=True)[1] / y_test.shape[0])
 
 # используем взвешенный KNN
 print("взвешенный KNN:")
